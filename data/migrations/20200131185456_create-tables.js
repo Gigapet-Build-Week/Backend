@@ -1,8 +1,8 @@
-const USER = "USER";
-const CHILD = "CHILD";
-const PET = "PET";
-const FOOD_ENTRY = "FOOD_ENTRY";
-const CATEGORY = "CATEGORY";
+const USER = "users";
+const CHILD = "children";
+const PET = "pets";
+const CATEGORY = "categories";
+const FOOD_ENTRY = "food_entries";
 
 exports.up = async function (knex) {
    await knex.schema.createTable(USER, table => {
@@ -21,7 +21,7 @@ exports.up = async function (knex) {
       //knickname varchar(128) [null]
       table.string("knickname", 128)
       //created datetime [not null]
-      table.dateTime("created")
+      table.dateTime("created_at", {precision: 6})
          .notNullable();
       //last_login datetime [not null]
       table.dateTime("last_login")
@@ -102,6 +102,7 @@ exports.up = async function (knex) {
          .notNullable();
       //description string
       table.string("description")
+         .notNullable();
       //servings unsigned [default: 1]
       table.integer("servings")
          .unsigned()
