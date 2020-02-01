@@ -6,56 +6,112 @@ const CATEGORY = "CATEGORY";
 
 exports.up = async function (knex) {
    knex.schema.create_table(USER, table => {
-      table.increment("id");     //id  integer [pk, increment] //auto increment
-      table.string("username", 128) //username varchar(128) [not null, unique]
+      //id  integer [pk, increment] //auto increment
+      table.increment("id");
+      //username varchar(128) [not null, unique]
+      table.string("username", 128)
          .unique()
          .notNullable();
-      table.string("password", 128) //password varchar(128) [not null]
+      //password varchar(128) [not null]
+      table.string("password", 128) 
          .notNullable();
-      table.boolean("is_onboarded") //is_onboarded boolean [default: 0]
-         .defaultTo(0); 
-      table.string("knickname", 128) //knickname varchar(128) [null]
-      table.dateTime("created")  //created datetime [not null]
+      //is_onboarded boolean [default: 0]
+      table.boolean("is_onboarded")
+         .defaultTo(0);
+      //knickname varchar(128) [null]
+      table.string("knickname", 128)
+      //created datetime [not null]
+      table.dateTime("created")
          .notNullable();
-      table.dateTime("last_login")  //last_login datetime [not null]
+      //last_login datetime [not null]
+      table.dateTime("last_login")
          .notNullable();
    });
 
    knex.schema.create_table(CHILD, table => {
-      table.increment("id");     //id  integer [pk, increment] //auto increment
-      table.integer("parent_id") //parent_id integer [not null, ref: > user.id]
+      //id  integer [pk, increment] //auto increment
+      table.increment("id"); 
+      //parent_id integer [not null, ref: > user.id]
+      table.integer("parent_id") 
          .notNullable()
-         .references("id").inTable(USER);
-      table.string("name", 128) //name varchar(128) [not null]
+         .references("id").inTable(USER)
+         .onUpdate("CASCADE")
+         .onDelete("CASCADE");
+      //name varchar(128) [not null]
+      table.string("name", 128)  
          .notNullable();
-      table.integer("age") //age unsigned [default: 0]
+      //age unsigned [default: 0]
+      table.integer("age")       
          .unsigned()
          .defaultTo(0);
 
    });
 
    knex.schema.create_table(PET, table => {
-      table.increment("id");    //id  integer [pk, increment] //auto increment
-      table.integer("child_id") //[unique, not null, ref: - child.id]
+      //id  integer [pk, increment] //auto increment
+      table.increment("id");
+      //id  integer [pk, increment] //auto increment
+      table.integer("child_id")
          .unique()
          .notNullable()
-         .references("id").inTable(CHILD);
-      table.integer("health_total") //health_total unsigned [default: 0] //values are between 0 and 1000 (target: 500)
+         .references("id").inTable(CHILD)
+         .onUpdate("CASCADE")
+         .onDelete("CASCADE");
+      //health_total unsigned [default: 0] //values are between 0 and 1000 (target: 500)
+      table.integer("health_total")
          .unsigned()
          .notNullable()
          .defaultTo(0);
-      table.integer("health_total") //health_total_target unsigned [default: 500]
+      //health_total_target unsigned [default: 500]
+      table.integer("health_total")
          .unsigned()
          .notNullable()
          .defaultTo(500);
    });
 
+   knex.schema.create_table(CATEGORY, table => {
+      //id  integer [pk, increment] //auto increment
+      table.increment("id");
+      //name string [not null, unique]
+      table.string("name", 128)
+         .unique()
+         .notNullable()
+      //suggested_servings unsigned [default: 1]
+      table.integer("suggested_servings")
+         .defaultTo(1);
+      //description string [default: null]
+      table.integer("suggested_servings")
+   });
 
+   knex.schema.create_table(FOOD_ENTRY, table => {
+      //id  integer [pk, increment] //auto increment
+      table.increment("id");
+      //child_id integer [ref: > child.id]
+      table.integer("child_id")
+         .notNullable()
+         .references("id").inTable(CHILD)
+         .onUpdate("CASCADE")
+         .onDelete("CASCADE");
+      //category_id integer [ref: > category.id]
+      table.integer("category_id")
+         .references("id").inTable(CATEGORY)
+         .onUpdate("CASCADE")
+         .onDelete("CASCADE");
+      //eaten_on date [not null]
+      table.date("eaten_on")
+         .notNullable();
+      //suggested_servings unsigned [default: 1]
+      table.integer("suggested_servings")
+         .unsigned()
+         .defaultTo(1);
+      //description string
+      table.string("description")
+   });
 };
 
 exports.down = async function (knex) {
-   knex.schema.dropTableIfExists(CATEGORY);
    knex.schema.dropTableIfExists(FOOD_ENTRY);
+   knex.schema.dropTableIfExists(CATEGORY);
    knex.schema.dropTableIfExists(PET);
    knex.schema.dropTableIfExists(CHILD);
    knex.schema.dropTableIfExists(USER);
