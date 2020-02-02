@@ -1,7 +1,8 @@
 const superTest = require("supertest");
 const server = require("../api/server");
 const db = require("../data/knexDb");
-const {status, GIVE_NAME_PWD, ALREADY_EXISTS} = require("../api/constants");
+const jwt = require("jsonwebtoken");
+const {status, msg} = require("../api/constants");
 
 const TEST_USER = {
    username: "Your Mom",
@@ -34,7 +35,7 @@ describe("POST /api/auth/register", () => {
       });
       expect(response.status).toBe(status.BAD_REQ);
       expect(response.type).toBe(APP_JSON);
-      expect(response.body.message).toBe(GIVE_NAME_PWD);
+      expect(response.body.message).toBe(msg.GIVE_NAME_PWD);
    });
 
    test("Returns status code 400 when missing password", async () => {
@@ -43,7 +44,7 @@ describe("POST /api/auth/register", () => {
       });
       expect(response.status).toBe(status.BAD_REQ);
       expect(response.type).toBe(APP_JSON);
-      expect(response.body.message).toBe(GIVE_NAME_PWD);
+      expect(response.body.message).toBe(msg.GIVE_NAME_PWD);
    });
 
    test("Returns status code 201 when data is good", async () => {
@@ -53,19 +54,21 @@ describe("POST /api/auth/register", () => {
       expect(response.type).toBe(APP_JSON);
 
       //test user properties
-      expect(newUser.username).toBe(TEST_USER.username);
+      expect(newUser).toMatchObject({
+         username: TEST_USER.username,
+         is_onboarded: false,
+         knickname: null,
+         created_at: expect.anything(),
+         last_login: expect.anything()
+      });
       expect(newUser.password).toBeUndefined();
-      expect(newUser.is_onboarded).toBe(false);
-      expect(newUser.knickname).toBeNull();
-      expect(newUser.created_at).toBeTruthy();
-      expect(newUser.last_login).toBeTruthy();
    });
 
    test("Returns status code 400 when user already exists", async () => {
       const response = await registerUser(TEST_USER);
       expect(response.status).toBe(status.BAD_REQ);
       expect(response.type).toBe(APP_JSON);
-      expect(response.body.message).toBe(ALREADY_EXISTS);
+      expect(response.body.message).toBe(msg.ALREADY_EXISTS);
    });
 });
 
@@ -76,14 +79,69 @@ describe("POST /api/auth/login", () => {
       });
       expect(response.status).toBe(status.BAD_REQ);
       expect(response.type).toBe(APP_JSON);
-      expect(response.body.message).toBe(GIVE_NAME_PWD);
+      expect(response.body.message).toBe(msg.GIVE_NAME_PWD);
    });
 
    test("Returns status code 400 when missing password", async () => {
-      expect(true).toBe(false);
+      const response = await loginUser({
+         username: TEST_USER.username
+      });
+      expect(response.status).toBe(status.BAD_REQ);
+      expect(response.type).toBe(APP_JSON);
+      expect(response.body.message).toBe(msg.GIVE_NAME_PWD);
    });
 
+   test("Returns status code 400 when username doesn't exist", async () => {
+      const response = await loginUser({
+         ...TEST_USER,
+         username: "NotReallyHere!"
+      });
+      expect(response.status).toBe(status.BAD_REQ);
+      expect(response.type).toBe(APP_JSON);
+      expect(response.body.message).toBe(msg.BAD_NAME_PWD);
+   })
+
+   test("Returns status code 401 when password doens't match", async () => {
+      const response = await loginUser({
+         ...TEST_USER,
+         password: "bad#password"
+      });
+      expect(response.status).toBe(status.UNAUTHENTICATED);
+      expect(response.type).toBe(APP_JSON);
+      expect(response.body.message).toBe(msg.BAD_NAME_PWD);
+   })
+
    test("Returns status code 200 and a valid auth token when data is good", async () => {
-      expect(true).toBe(false);
+      const response = await loginUser(TEST_USER);
+      const {token, message} = response.body;
+      expect(response.status).toBe(status.OK);
+      expect(response.type).toBe(APP_JSON);
+
+      //test user properties
+      expect(message).toBe(`Welcome back ${TEST_USER.username}`);
+      expect(token).not.toBeUndefined();
+
+      try {
+         const isValidToken = jwt.verify("token", process.env.JWT_SECRET || "doh!");
+         expect(isValidToken).toBeTruthy();
+      } catch (error) {
+         console.log("Login returned an invalid token");
+         console.error(error.toString());
+         expect(false).toBe(true);
+      }
+      // const isValidToken = new Promise((resolve, reject) => {
+      //    jwt.verify(
+      //       login_res.body.token, 
+      //       process.env.JWT_SECRET, 
+      //       (error, payload) => {
+      //          if (error) {
+      //             resolve(false);
+      //          } else {
+      //             resolve(true);
+      //          }
+      //       }
+      //    );
+      // });
+      // await expect(isValidToken).resolves.toBe(true);
    });
 });
