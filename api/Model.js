@@ -23,8 +23,7 @@ class Model {
    update (id, newData) {
       return this.db()
          .update(newData)
-         .where({id})
-         .returning("*");
+         .where({id});
    }
    remove (id) {
       return this.db()

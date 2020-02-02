@@ -1,5 +1,6 @@
 # sqlite3 db files
 *.db3
+*.db3-journal
 
 # Logs
 logs
