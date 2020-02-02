@@ -1,7 +1,8 @@
 const router = require("express").Router();
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const {status, msg} = require("../constants");
 const authModel = require("./auth-model");
-const isAuthorized = require("./authenticate");
 
 //POST /api/auth/register
 router.post("/register", async (req, res, next) => {
@@ -25,7 +26,7 @@ router.post("/register", async (req, res, next) => {
       }
 
       //register user
-      const {password, ...sanitizedUser} = await authModel.add(req.body);
+      const {password, ...sanitizedUser} = await authModel.addUser(req.body);
       sanitizedUser.is_onboarded = !!sanitizedUser.is_onboarded;
 
       //return sanitized user data
@@ -48,23 +49,23 @@ router.post("/login", async (req, res, next) => {
    }
 
    try {
-      //Username must exist
+      //Validate username and password
       const user = await authModel.findBy({username}).first();
-      if (!user) {
-         return res.status(status.BAD_REQ).json({
+      if (!user || !bcrypt.compareSync(password, user.password)) {
+         return res.status(status.UNAUTHENTICATED).json({
             message: msg.BAD_NAME_PWD
          });
       }
 
-
-
       //sign the token
+      
    } catch (error) {
       console.error(`There was a problem logging in`);
       next(error);
    }
 
 
+   console.error("Endpoint still under construction!");
    res.status(status.NOT_FOUND).json({
       message: "Endpoint still under construction!"
    });

@@ -1,8 +1,7 @@
 const bcrypt = require("bcryptjs");
-const db = require("../../data/knexDb");
-const users_db = db.bind(db, "users");
+const Model = require("../Model");
 
-const add = async userData => {
+async function addUser (userData) {
    const {password} = userData;
    const NOW = new Date().toISOString();
    console.log(`Today is:\n${Date(NOW)}`);
@@ -19,25 +18,17 @@ const add = async userData => {
       newUser.password = hashedPwd;
 
       console.log(`Inserting a new user...\n${JSON.stringify(newUser, null, 3)}`);
-      const [id] = await users_db().insert(newUser);
-      return findById(id);
+      if (process.env.DB_ENV === "development") {
+         const [id] = await this.add(newUser);
+         return this.findById(id);
+      }
+      
+      return this.add(newUser);
    } catch (error) {
       return Promise.reject(error);
    }
 };
 
-const findBy = filter => {
-   return users_db()
-      .where(filter);
-};
-
-const findById = id => {
-   return findBy({id})
-      .first();
-}
-
-module.exports = {
-   add,
-   findBy,
-   findById
-};
+const Auth = new Model("users");
+Auth.addUser = addUser.bind(Auth);
+module.exports = Auth;

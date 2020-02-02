@@ -23,7 +23,7 @@ const loginUser = (userData) => {
 };
 
 
-
+//*** Begin Tests ***//
 beforeAll(async () => {
    await db.seed.run();
 })
@@ -91,12 +91,12 @@ describe("POST /api/auth/login", () => {
       expect(response.body.message).toBe(msg.GIVE_NAME_PWD);
    });
 
-   test("Returns status code 400 when username doesn't exist", async () => {
+   test("Returns status code 401 when username doesn't exist", async () => {
       const response = await loginUser({
          ...TEST_USER,
          username: "NotReallyHere!"
       });
-      expect(response.status).toBe(status.BAD_REQ);
+      expect(response.status).toBe(status.UNAUTHENTICATED);
       expect(response.type).toBe(APP_JSON);
       expect(response.body.message).toBe(msg.BAD_NAME_PWD);
    })
