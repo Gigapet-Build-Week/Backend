@@ -1,7 +1,7 @@
 const superTest = require("supertest");
+const jwt = require("jsonwebtoken");
 const server = require("../api/server");
 const db = require("../data/knexDb");
-const jwt = require("jsonwebtoken");
 const {status, msg} = require("../api/constants");
 
 const TEST_USER = {
