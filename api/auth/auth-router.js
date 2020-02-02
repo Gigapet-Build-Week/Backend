@@ -4,7 +4,7 @@ const isAuthorized = require("./authenticate");
 
 //POST /api/auth/register
 router.post("/register", (req, res, next) => {
-   const {username, password, password_2} = req.body;
+   const {username, password} = req.body;
 
    if (!username || !password) {
       return res.status(400).json({

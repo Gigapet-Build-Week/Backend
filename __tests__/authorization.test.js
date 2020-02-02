@@ -5,8 +5,7 @@ const {status, GIVE_NAME_PWD} = require("../api/constants");
 
 const TEST_USER = {
    username: "Your Mom",
-   password: "Im@R0ck$tar!",
-   password_2: "Im@R0ck$tar!"
+   password: "Im@R0ck$tar!"
 };
 const APP_JSON = "application/json";
 
@@ -22,16 +21,15 @@ const login_user = ({username, password}) => {
 };
 
 
-// beforeAll(async () => {
-//    await gigapet_db.seed.run();
-// })
+beforeAll(async () => {
+   await gigapet_db.seed.run();
+})
 
 describe("Testing Authorization", () => {
    describe("POST /api/auth/register", () => {
       test("Returns status code 400 when missing username", async () => {
          const response = await register_user({
-            password: TEST_USER.password,
-            password_2: TEST_USER.password_2
+            password: TEST_USER.password
          });
          expect(response.status).toBe(status.BAD_REQ);
          expect(response.type).toBe(APP_JSON);
@@ -44,9 +42,6 @@ describe("Testing Authorization", () => {
          expect(response.status).toBe(status.BAD_REQ);
          expect(response.type).toBe(APP_JSON);
          expect(response.body.message).toBe(GIVE_NAME_PWD);
-      });
-      it("Returns status code 400 when password_2 doesn't match password", () => {
-         expect(false).toBe(true);
       });
       it("Returns status code 400 when username is not a string", () => {
          expect(false).toBe(true);
