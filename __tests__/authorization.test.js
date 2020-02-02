@@ -37,11 +37,26 @@ describe("Testing Authorization", () => {
          expect(response.type).toBe(APP_JSON);
          expect(response.body.message).toBe(GIVE_NAME_PWD);
       });
-      // it("Returns status code 400 when missing password");
-      // it("Returns status code 400 when password_2 doesn't match password");
-      // it("Returns status code 400 when username is not a string");
-      // it("Returns status code 400 when password is not a string");
-      // it("Returns status code 201 when data is good");
+      it("Returns status code 400 when missing password", async () => {
+         const response = await register_user({
+            username: TEST_USER.username
+         });
+         expect(response.status).toBe(status.BAD_REQ);
+         expect(response.type).toBe(APP_JSON);
+         expect(response.body.message).toBe(GIVE_NAME_PWD);
+      });
+      it("Returns status code 400 when password_2 doesn't match password", () => {
+         expect(false).toBe(true);
+      });
+      it("Returns status code 400 when username is not a string", () => {
+         expect(false).toBe(true);
+      });
+      it("Returns status code 400 when password is not a string", () => {
+         expect(false).toBe(true);
+      });
+      it("Returns status code 201 when data is good", () => {
+         expect(false).toBe(true);
+      });
    });
 
    // describe("POST /api/login", () => {
