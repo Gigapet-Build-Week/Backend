@@ -3,20 +3,6 @@
    "version": "1.0.0",
    "description": "",
    "main": "index.js",
-   "dependencies": {
-      "bcryptjs": "^2.4.3",
-      "dotenv": "^8.2.0",
-      "express": "^4.17.1",
-      "helmet": "^3.21.2",
-      "jsonwebtoken": "^8.5.1",
-      "knex": "^0.20.8",
-      "sqlite3": "^4.1.1"
-   },
-   "devDependencies": {
-      "jest": "^25.1.0",
-      "nodemon": "^2.0.2",
-      "supertest": "^4.0.2"
-   },
    "scripts": {
       "test": "jest --verbose --watch",
       "testNoWatch": "jest --verbose",
@@ -32,10 +18,22 @@
       "url": "https://github.com/Gigapet-Build-Week/Backend/issues"
    },
    "homepage": "https://github.com/Gigapet-Build-Week/Backend#readme",
+   "dependencies": {
+      "bcryptjs": "^2.4.3",
+      "dotenv": "^8.2.0",
+      "express": "^4.17.1",
+      "helmet": "^3.21.2",
+      "jsonwebtoken": "^8.5.1",
+      "knex": "^0.20.8",
+      "sqlite3": "^4.1.1"
+   },
+   "devDependencies": {
+      "jest": "^25.1.0",
+      "nodemon": "^2.0.2",
+      "supertest": "^4.0.2"
+   },
    "jest": {
       "testEnvironment": "node",
-      "setupFiles": [
-         "dotenv/config"
-      ]
+      "setupFiles": ["dotenv/config"]
    }
 }

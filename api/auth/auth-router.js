@@ -1,8 +1,20 @@
 const router = require("express").Router();
+const {status, GIVE_NAME_PWD} = require("../constants");
 const isAuthorized = require("./authenticate");
 
-router.post("/register", () => {
+//POST /api/auth/register
+router.post("/register", (req, res, next) => {
+   const {username, password, password_2} = req.body;
 
+   if (!username || !password) {
+      return res.status(400).json({
+         message: GIVE_NAME_PWD
+      });
+   }
+
+   res.status(status.BAD_REQ).json({
+      message: "Endpoint still under construction!"
+   });
 });
 
-return router;
+module.exports =  router;
