@@ -24,7 +24,7 @@ exports.up = async function (knex) {
       table.dateTime("created_at", {precision: 6})
          .notNullable();
       //last_login datetime [not null]
-      table.dateTime("last_login");
+      table.dateTime("last_login", {precision: 6});
    });
 
    await knex.schema.createTable(CHILDREN, table => {

@@ -16,6 +16,8 @@ router.post("/register", async (req, res, next) => {
 
    try {
       const {password, ...sanitizedUser} = await authModel.add(req.body);
+      sanitizedUser.is_onboarded = !!sanitizedUser.is_onboarded;
+      
       res.status(status.CREATED).json(sanitizedUser);
    } catch (error) {
       console.error(`There was a problem registering a new user`);

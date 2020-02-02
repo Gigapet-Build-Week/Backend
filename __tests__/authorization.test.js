@@ -55,6 +55,8 @@ describe("POST /api/auth/register", () => {
       expect(newUser.password).toBeUndefined();
       expect(newUser.is_onboarded).toBe(false);
       expect(newUser.knickname).toBeNull();
+      expect(newUser.created_at).toBeTruthy();
+      expect(newUser.last_login).toBeTruthy();
    });
 
    // test("Returns status code 400 when user already exists", () => {
