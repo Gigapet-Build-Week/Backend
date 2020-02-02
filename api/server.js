@@ -20,7 +20,7 @@ server.use((req, res) => {
 
 //Global 500 Error
 server.use((error, req, res, next) => {
-   console.log(error.toString());
+   console.error(error.toString());
    res.status(500).json({
       data: error.toString()
    });
