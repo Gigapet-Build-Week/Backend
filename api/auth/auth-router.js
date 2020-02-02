@@ -58,17 +58,20 @@ router.post("/login", async (req, res, next) => {
       }
 
       //sign the token
-      
+      const token = jwt.sign(
+         {id: user.id, knickname: user.knickname},
+         process.env.JWT_SECRET,
+         {expiresIn: "1hr"}
+      );
+
+      res.status(status.OK).json({
+         token,
+         message: `Welcome back ${user.username}`
+      });
    } catch (error) {
       console.error(`There was a problem logging in`);
       next(error);
    }
-
-
-   console.error("Endpoint still under construction!");
-   res.status(status.NOT_FOUND).json({
-      message: "Endpoint still under construction!"
-   });
 });
 
 module.exports =  router;

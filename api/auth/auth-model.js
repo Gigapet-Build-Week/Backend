@@ -23,7 +23,8 @@ async function addUser (userData) {
          return this.findById(id);
       }
       
-      return this.add(newUser);
+      return this.add(newUser)
+         .returning(["id", "username", "knickname", "is_onboarded"]);
    } catch (error) {
       return Promise.reject(error);
    }

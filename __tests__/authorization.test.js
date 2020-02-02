@@ -113,35 +113,24 @@ describe("POST /api/auth/login", () => {
 
    test("Returns status code 200 and a valid auth token when data is good", async () => {
       const response = await loginUser(TEST_USER);
-      const {token, message} = response.body;
+      const {token} = response.body;
       expect(response.status).toBe(status.OK);
       expect(response.type).toBe(APP_JSON);
 
       //test user properties
-      expect(message).toBe(`Welcome back ${TEST_USER.username}`);
-      expect(token).not.toBeUndefined();
+      expect(response.body).toMatchObject({
+         token: expect.anything(),
+         message: `Welcome back ${TEST_USER.username}`
+      });
 
+      //verify token
       try {
-         const isValidToken = jwt.verify("token", process.env.JWT_SECRET || "doh!");
+         const isValidToken = jwt.verify(token, process.env.JWT_SECRET || "doh!");
          expect(isValidToken).toBeTruthy();
       } catch (error) {
          console.log("Login returned an invalid token");
          console.error(error.toString());
          expect(false).toBe(true);
       }
-      // const isValidToken = new Promise((resolve, reject) => {
-      //    jwt.verify(
-      //       login_res.body.token, 
-      //       process.env.JWT_SECRET, 
-      //       (error, payload) => {
-      //          if (error) {
-      //             resolve(false);
-      //          } else {
-      //             resolve(true);
-      //          }
-      //       }
-      //    );
-      // });
-      // await expect(isValidToken).resolves.toBe(true);
    });
 });
