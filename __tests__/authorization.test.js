@@ -1,7 +1,7 @@
 const superTest = require("supertest");
 const server = require("../api/server");
 const db = require("../data/knexDb");
-const {status, GIVE_NAME_PWD} = require("../api/constants");
+const {status, GIVE_NAME_PWD, ALREADY_EXISTS} = require("../api/constants");
 
 const TEST_USER = {
    username: "Your Mom",
@@ -59,7 +59,10 @@ describe("POST /api/auth/register", () => {
       expect(newUser.last_login).toBeTruthy();
    });
 
-   // test("Returns status code 400 when user already exists", () => {
-   //    expect(false).toBe(true);
-   // });
+   test("Returns status code 400 when user already exists", async () => {
+      const response = await register_user(TEST_USER);
+      expect(response.status).toBe(status.BAD_REQ);
+      expect(response.type).toBe(APP_JSON);
+      expect(response.body.message).toBe(ALREADY_EXISTS);
+   });
 });
