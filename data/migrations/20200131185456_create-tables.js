@@ -1,11 +1,11 @@
-const USER = "USER";
-const CHILD = "CHILD";
-const PET = "PET";
-const FOOD_ENTRY = "FOOD_ENTRY";
-const CATEGORY = "CATEGORY";
+const USERS = "users";
+const CHILDREN = "children";
+const PETS = "pets";
+const CATEGORIES = "categories";
+const FOOD_ENTRIES = "food_entries";
 
 exports.up = async function (knex) {
-   await knex.schema.createTable(USER, table => {
+   await knex.schema.createTable(USERS, table => {
       //id  integer [pk, increment] //auto increment
       table.increments("id");
       //username varchar(128) [not null, unique]
@@ -21,20 +21,20 @@ exports.up = async function (knex) {
       //knickname varchar(128) [null]
       table.string("knickname", 128)
       //created datetime [not null]
-      table.dateTime("created")
+      table.dateTime("created_at", {precision: 6})
          .notNullable();
       //last_login datetime [not null]
       table.dateTime("last_login")
          .notNullable();
    });
 
-   await knex.schema.createTable(CHILD, table => {
+   await knex.schema.createTable(CHILDREN, table => {
       //id  integer [pk, increment] //auto increment
       table.increments("id"); 
       //parent_id integer [not null, ref: > user.id]
       table.integer("parent_id") 
          .notNullable()
-         .references("id").inTable(USER)
+         .references("id").inTable(USERS)
          .onUpdate("CASCADE")
          .onDelete("CASCADE");
       //name varchar(128) [not null]
@@ -44,21 +44,20 @@ exports.up = async function (knex) {
       table.integer("age")       
          .unsigned()
          .defaultTo(0);
-
    });
 
-   await knex.schema.createTable(PET, table => {
+   await knex.schema.createTable(PETS, table => {
       //id  integer [pk, increment] //auto increment
       table.increments("id");
       //id  integer [pk, increment] //auto increment
       table.integer("child_id")
          .unique()
          .notNullable()
-         .references("id").inTable(CHILD)
+         .references("id").inTable(CHILDREN)
          .onUpdate("CASCADE")
          .onDelete("CASCADE");
       //health_total unsigned [default: 0] //values are between 0 and 1000 (target: 500)
-      table.integer("health_total")
+      table.integer("health")
          .unsigned()
          .notNullable()
          .defaultTo(0);
@@ -69,7 +68,7 @@ exports.up = async function (knex) {
          .defaultTo(500);
    });
 
-   await knex.schema.createTable(CATEGORY, table => {
+   await knex.schema.createTable(CATEGORIES, table => {
       //id  integer [pk, increment] //auto increment
       table.increments("id");
       //name string [not null, unique]
@@ -77,24 +76,24 @@ exports.up = async function (knex) {
          .unique()
          .notNullable()
       //suggested_servings unsigned [default: 1]
-      table.integer("suggested_servings")
-         .defaultTo(1);
+      table.decimal("suggested_servings", 3)
+         .defaultTo(1.000);
       //description string [default: null]
-      table.integer("description")
+      table.string("description", 500);
    });
 
-   await knex.schema.createTable(FOOD_ENTRY, table => {
+   await knex.schema.createTable(FOOD_ENTRIES, table => {
       //id  integer [pk, increment] //auto increment
       table.increments("id");
       //child_id integer [ref: > child.id]
       table.integer("child_id")
          .notNullable()
-         .references("id").inTable(CHILD)
+         .references("id").inTable(CHILDREN)
          .onUpdate("CASCADE")
          .onDelete("CASCADE");
       //category_id integer [ref: > category.id]
       table.integer("category_id")
-         .references("id").inTable(CATEGORY)
+         .references("id").inTable(CATEGORIES)
          .onUpdate("CASCADE")
          .onDelete("CASCADE");
       //eaten_on date [not null]
@@ -102,6 +101,7 @@ exports.up = async function (knex) {
          .notNullable();
       //description string
       table.string("description")
+         .notNullable();
       //servings unsigned [default: 1]
       table.integer("servings")
          .unsigned()
@@ -110,9 +110,9 @@ exports.up = async function (knex) {
 };
 
 exports.down = async function (knex) {
-   await knex.schema.dropTableIfExists(FOOD_ENTRY);
-   await knex.schema.dropTableIfExists(CATEGORY);
-   await knex.schema.dropTableIfExists(PET);
-   await knex.schema.dropTableIfExists(CHILD);
-   await knex.schema.dropTableIfExists(USER);
+   await knex.schema.dropTableIfExists(FOOD_ENTRIES);
+   await knex.schema.dropTableIfExists(CATEGORIES);
+   await knex.schema.dropTableIfExists(PETS);
+   await knex.schema.dropTableIfExists(CHILDREN);
+   await knex.schema.dropTableIfExists(USERS);
 };

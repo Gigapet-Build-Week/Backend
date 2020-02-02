@@ -1,28 +1,35 @@
 // Update with your config settings.
 const dbConfig = {
-   client: "sqlite3",
-   useNullAsDefault: true,
-   migrations: {
-      directory: "./data/migrations",
-   },
-   seeds: {
-      directory: "./data/seeds",
-   },
+
 }
 
 module.exports = {
    development: {
-      ...dbConfig,
+      client: "sqlite3",
+      useNullAsDefault: true,
       connection: {
          filename: './data/test.db3'
       },
+      migrations: {
+         directory: "./data/migrations",
+      },
+      seeds: {
+         directory: "./data/seeds",
+      }
    },
 
    production: {
-      ...dbConfig,
+      client: "sqlite3",
+      useNullAsDefault: true,
       connection: {
          filename: './data/gigapet.db3'
       },
+      migrations: {
+         directory: "./data/migrations",
+      },
+      seeds: {
+         directory: "./data/seeds",
+      }
    }
    
    // staging: {
