@@ -1,7 +1,7 @@
 const express = require("express");
 const helmet = require("helmet");
-const authRouter = require("./api/auth");
-const userRouter = require("./api/user");
+const authRouter = require("./auth/auth-router");
+// const userRouter = require("./api/user");
 const server = express();
 
 //apply middleware
@@ -9,7 +9,7 @@ server.use(helmet());
 server.use(express.json());
 
 //routes
-server.use();
+server.use("/api/auth", authRouter);
 
 //404 Page not found
 server.use((req, res) => {
@@ -26,4 +26,4 @@ server.use((error, req, res, next) => {
    });
 });
 
-return server;
+module.exports =  server;
