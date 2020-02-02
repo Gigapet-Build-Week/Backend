@@ -18,7 +18,7 @@ async function addUser (userData) {
       newUser.password = hashedPwd;
 
       console.log(`Inserting a new user...\n${JSON.stringify(newUser, null, 3)}`);
-      if (process.env.DB_ENV === "development") {
+      if (process.env.DB_ENV !== "production") {
          const [id] = await this.add(newUser);
          return this.findById(id);
       }
