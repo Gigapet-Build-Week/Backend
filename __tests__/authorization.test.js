@@ -9,16 +9,18 @@ const TEST_USER = {
 };
 const APP_JSON = "application/json";
 
-const register_user = (userData) => {
+const runTest = (userData, toRoute) => {
    return superTest(server)
-      .post("/api/auth/register")
+      .post(toRoute)
       .send(userData);
 };
-const login_user = ({username, password}) => {
-   return superTest(server)
-      .post("/api/auth/login")
-      .send({username, password});
+const registerUser = (userData) => {
+   return runTest(userData, "/api/auth/register");
 };
+const loginUser = (userData) => {
+   return runTest(userData, "/api/auth/login");
+};
+
 
 
 beforeAll(async () => {
@@ -27,7 +29,7 @@ beforeAll(async () => {
 
 describe("POST /api/auth/register", () => {
    test("Returns status code 400 when missing username", async () => {
-      const response = await register_user({
+      const response = await registerUser({
          password: TEST_USER.password
       });
       expect(response.status).toBe(status.BAD_REQ);
@@ -36,7 +38,7 @@ describe("POST /api/auth/register", () => {
    });
 
    test("Returns status code 400 when missing password", async () => {
-      const response = await register_user({
+      const response = await registerUser({
          username: TEST_USER.username
       });
       expect(response.status).toBe(status.BAD_REQ);
@@ -45,7 +47,7 @@ describe("POST /api/auth/register", () => {
    });
 
    test("Returns status code 201 when data is good", async () => {
-      const response = await register_user(TEST_USER);
+      const response = await registerUser(TEST_USER);
       const newUser = response.body;
       expect(response.status).toBe(status.CREATED);
       expect(response.type).toBe(APP_JSON);
@@ -60,9 +62,28 @@ describe("POST /api/auth/register", () => {
    });
 
    test("Returns status code 400 when user already exists", async () => {
-      const response = await register_user(TEST_USER);
+      const response = await registerUser(TEST_USER);
       expect(response.status).toBe(status.BAD_REQ);
       expect(response.type).toBe(APP_JSON);
       expect(response.body.message).toBe(ALREADY_EXISTS);
+   });
+});
+
+describe("POST /api/auth/login", () => {
+   test("Returns status code 400 when missing username", async () => {
+      const response = await loginUser({
+         password: TEST_USER.password
+      });
+      expect(response.status).toBe(status.BAD_REQ);
+      expect(response.type).toBe(APP_JSON);
+      expect(response.body.message).toBe(GIVE_NAME_PWD);
+   });
+
+   test("Returns status code 400 when missing password", async () => {
+      expect(true).toBe(false);
+   });
+
+   test("Returns status code 200 and a valid auth token when data is good", async () => {
+      expect(true).toBe(false);
    });
 });

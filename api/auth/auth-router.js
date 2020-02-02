@@ -32,10 +32,13 @@ router.post("/register", async (req, res, next) => {
       console.error(`There was a problem registering a new user`);
       next(error);
    }
+});
 
-   // res.status(status.BAD_REQ).json({
-   //    message: "Endpoint still under construction!"
-   // });
+//POST /api/auth/login
+router.post("/login", async (req, res, next) => {
+   res.status(status.NOT_FOUND).json({
+      message: "Endpoint still under construction!"
+   });
 });
 
 module.exports =  router;

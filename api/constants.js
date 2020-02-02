@@ -5,7 +5,9 @@ const status = {
    CREATED: 201,
    BAD_REQ: 400,
    UNAUTHENTICATED: 401,
-   FORBIDDEN: 403
+   FORBIDDEN: 403,
+   NOT_FOUND: 404,
+   SERVER_ERR: 500
 };
 
 module.exports = {
