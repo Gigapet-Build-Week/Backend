@@ -26,7 +26,7 @@ const loginUser = (userData) => {
 //*** Begin Tests ***//
 beforeAll(async () => {
    await db.seed.run();
-})
+});
 
 describe("POST /api/auth/register", () => {
    test("Returns status code 400 when missing username", async () => {
