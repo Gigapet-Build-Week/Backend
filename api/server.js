@@ -6,6 +6,7 @@ const userRouter = require("./user/user-router");
 const {status} = require("./constants");
 const server = express();
 
+server.use(helmet());
 server.use(express.json());
 
 //main 
@@ -18,7 +19,7 @@ server.get("/", (req, res, next) => {
 
 //routes
 server.use("/api/auth", authRouter);
-server.use("/api/user", authenticate, authRouter);
+// server.use("/api/user", authenticate, userRouter);
 
 //404 Page not found
 server.use((req, res) => {
