@@ -1,4 +1,4 @@
-const router = require("express").Router;
+const router = require("express").Router();
 const {status} = require("../constants");
 
 router.get("/", (req, res, next) => {
@@ -16,7 +16,7 @@ router.put("/:id", (req, res, next) => {
       message: `${req.method}  ${req.url} still under construction!`
    });
 });
-router.remove("/:id", (req, res, next) => {
+router.delete("/:id", (req, res, next) => {
    res.status(status.BAD_REQ).json({
       message: `${req.method}  ${req.url} still under construction!`
    });
