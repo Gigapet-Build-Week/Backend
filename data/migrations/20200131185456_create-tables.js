@@ -21,10 +21,11 @@ exports.up = async function (knex) {
       //knickname varchar(128) [null]
       table.string("knickname", 128)
       //created datetime [not null]
-      table.dateTime("created_at", {precision: 6})
-         .notNullable();
+      // table.dateTime("created_at", {precision: 6})
+      //    .notNullable();
+      table.timestamps(true, true);
       //last_login datetime [not null]
-      table.dateTime("last_login", {precision: 6});
+      // table.dateTime("last_login", {precision: 6});
    });
 
    await knex.schema.createTable(CATEGORIES, table => {
