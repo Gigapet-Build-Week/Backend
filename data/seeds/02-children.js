@@ -5,6 +5,7 @@ exports.seed = async knex => {
       {parent_id: 1, name: "Sally", age: 10},
       {parent_id: 2, name: "Joe", age: 7},
       {parent_id: 2, name: "Lucy", age: 7},
-      {parent_id: 3, name: "Sarah", age: 4}
+      {parent_id: 3, name: "Sarah", age: 4},
+      {parent_id: 3, name: "Don", age: 43}
    ]);
 };
