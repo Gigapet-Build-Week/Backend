@@ -103,7 +103,7 @@ exports.up = async function (knex) {
       table.string("description")
          .notNullable();
       //servings unsigned [default: 1]
-      table.integer("servings")
+      table.float("servings", 3)
          .unsigned()
          .defaultTo(1);
    });
