@@ -7,7 +7,8 @@ class Model {
 
    add (newItem) {
       return this.db()
-         .insert(newItem);
+         .insert(newItem)
+         .returning("*");
    }
    find() {
       return this.db();
