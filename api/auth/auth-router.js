@@ -67,7 +67,7 @@ router.post("/login", async (req, res, next) => {
 
       res.status(status.OK).json({
          token,
-         message: `Welcome back ${user.username}`
+         message: `Welcome back ${user.knickname || user.username}`
       });
    } catch (error) {
       console.error(`There was a problem logging in`);

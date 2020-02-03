@@ -18,7 +18,7 @@ async function addUser (userData) {
          const [id] = await this.add(newUser);
          return this.findById(id);
       }
-      
+
       return this.add(newUser);
    } catch (error) {
       return Promise.reject(error);

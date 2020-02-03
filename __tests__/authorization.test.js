@@ -49,6 +49,7 @@ describe("POST /api/auth/register", () => {
 
    test("Returns status code 201 when data is good", async () => {
       const response = await registerUser(TEST_USER);
+      console.log(`newUser: ${JSON.stringify(response.body, null, 3)}`);
       const newUser = response.body;
       expect(response.status).toBe(status.CREATED);
       expect(response.type).toBe(APP_JSON);
@@ -59,7 +60,30 @@ describe("POST /api/auth/register", () => {
          is_onboarded: false,
          knickname: null,
          created_at: expect.anything(),
-         last_login: expect.anything()
+         updated_at: expect.anything()
+      });
+      expect(newUser.password).toBeUndefined();
+   });
+
+   test("Returns status code 201 when full data is good", async () => {
+      const TU2 = {
+         username: "whosYoDaddy",
+         password: "PlsGo2sleep",
+         is_onboarded: 1,
+         knickname: "Daddy Warbucks"
+      };
+      const response = await registerUser(TU2);
+      const newUser = response.body;
+      expect(response.status).toBe(status.CREATED);
+      expect(response.type).toBe(APP_JSON);
+
+      //test user properties
+      expect(newUser).toMatchObject({
+         username: TU2.username,
+         is_onboarded: true,
+         knickname: TU2.knickname,
+         created_at: expect.anything(),
+         updated_at: expect.anything()
       });
       expect(newUser.password).toBeUndefined();
    });

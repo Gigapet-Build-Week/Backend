@@ -18,8 +18,7 @@ class Model {
          .where(filter);
    }
    findById (id) {
-      return this.findBy({id})
-         .first();
+      return this.findBy({id});
    }
    update (id, newData) {
       return this.db()
