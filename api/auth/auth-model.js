@@ -2,15 +2,11 @@ const bcrypt = require("bcryptjs");
 const Model = require("../Model");
 
 async function addUser (userData) {
-   const {password} = userData;
-   const NOW = new Date().toISOString();
-   console.log(`Today is:\n${Date(NOW)}`);
+   // const {password} = userData;
 
    const newUser = {
       ...userData,
-      is_onboarded: !!userData.is_onboarded,
-      created_at: NOW,
-      last_login: NOW
+      // is_onboarded: !!userData.is_onboarded
    }
 
    try {
