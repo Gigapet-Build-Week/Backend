@@ -109,8 +109,8 @@ exports.up = async function (knex) {
 };
 
 exports.down = async function (knex) {
-   await knex.schema.dropTableIfExists(CATEGORIES);
    await knex.schema.dropTableIfExists(FOOD_ENTRIES);
+   await knex.schema.dropTableIfExists(CATEGORIES);
    await knex.schema.dropTableIfExists(PETS);
    await knex.schema.dropTableIfExists(CHILDREN);
    await knex.schema.dropTableIfExists(USERS);
