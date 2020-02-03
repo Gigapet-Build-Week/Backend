@@ -27,6 +27,20 @@ exports.up = async function (knex) {
       table.dateTime("last_login", {precision: 6});
    });
 
+   await knex.schema.createTable(CATEGORIES, table => {
+      //id  integer [pk, increment] //auto increment
+      table.increments("id");
+      //name string [not null, unique]
+      table.string("name", 128)
+         .unique()
+         .notNullable()
+      //suggested_servings unsigned [default: 1]
+      table.decimal("suggested_servings", 3)
+         .defaultTo(1.000);
+      //description string [default: null]
+      table.string("description", 500);
+   });
+
    await knex.schema.createTable(CHILDREN, table => {
       //id  integer [pk, increment] //auto increment
       table.increments("id"); 
@@ -67,20 +81,6 @@ exports.up = async function (knex) {
          .defaultTo(500);
    });
 
-   await knex.schema.createTable(CATEGORIES, table => {
-      //id  integer [pk, increment] //auto increment
-      table.increments("id");
-      //name string [not null, unique]
-      table.string("name", 128)
-         .unique()
-         .notNullable()
-      //suggested_servings unsigned [default: 1]
-      table.decimal("suggested_servings", 3)
-         .defaultTo(1.000);
-      //description string [default: null]
-      table.string("description", 500);
-   });
-
    await knex.schema.createTable(FOOD_ENTRIES, table => {
       //id  integer [pk, increment] //auto increment
       table.increments("id");
@@ -110,8 +110,8 @@ exports.up = async function (knex) {
 
 exports.down = async function (knex) {
    await knex.schema.dropTableIfExists(FOOD_ENTRIES);
-   await knex.schema.dropTableIfExists(CATEGORIES);
    await knex.schema.dropTableIfExists(PETS);
    await knex.schema.dropTableIfExists(CHILDREN);
+   await knex.schema.dropTableIfExists(CATEGORIES);
    await knex.schema.dropTableIfExists(USERS);
 };

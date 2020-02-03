@@ -5,9 +5,15 @@ const authRouter = require("./auth/auth-router");
 const {status} = require("./constants");
 const server = express();
 
-//apply middleware
-server.use(helmet());
 server.use(express.json());
+
+//main 
+server.get("/", (req, res, next) => {
+   res.json({
+      api: "running",
+      db_env: process.env.DB_ENV
+   });
+});
 
 //routes
 server.use("/api/auth", authRouter);
