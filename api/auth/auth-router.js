@@ -26,8 +26,8 @@ router.post("/register", async (req, res, next) => {
       }
 
       //register user
-      const [newUser] = await authModel.addUser(req.body);
-      const {password, ...sanitizedUser} = newUser;
+      const newUser = await authModel.addUser(req.body);
+      const {password, ...sanitizedUser} = newUser[0];
       sanitizedUser.is_onboarded = !!sanitizedUser.is_onboarded;
 
       //return sanitized user data
@@ -67,7 +67,7 @@ router.post("/login", async (req, res, next) => {
 
       res.status(status.OK).json({
          token,
-         message: `Welcome back ${user.username}`
+         message: `Welcome back ${user.knickname || user.username}`
       });
    } catch (error) {
       console.error(`There was a problem logging in`);
