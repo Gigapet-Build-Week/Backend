@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const Model = require("../Model");
 
 async function addUser (userData) {
-   // const {password} = userData;
+   const {password} = userData;
 
    const newUser = {
       ...userData,
