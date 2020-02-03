@@ -24,7 +24,7 @@ async function addUser (userData) {
       }
       
       return this.add(newUser)
-         .returning(["id", "username", "knickname", "is_onboarded"]);
+         .returning("*");
    } catch (error) {
       return Promise.reject(error);
    }
