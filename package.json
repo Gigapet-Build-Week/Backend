@@ -3,8 +3,22 @@
    "version": "1.0.0",
    "description": "",
    "main": "index.js",
+   "scripts": {
+      "test": "jest --verbose --watch",
+      "testNoWatch": "jest --verbose",
+      "server": "nodemon -r dotenv/config index.js"
+   },
+   "repository": {
+      "type": "git",
+      "url": "git+https://github.com/Gigapet-Build-Week/Backend.git"
+   },
+   "author": "Bradley Pitts",
+   "license": "MIT",
+   "bugs": {
+      "url": "https://github.com/Gigapet-Build-Week/Backend/issues"
+   },
+   "homepage": "https://github.com/Gigapet-Build-Week/Backend#readme",
    "dependencies": {
-      "axios": "^0.19.2",
       "bcryptjs": "^2.4.3",
       "dotenv": "^8.2.0",
       "express": "^4.17.1",
@@ -18,21 +32,6 @@
       "nodemon": "^2.0.2",
       "supertest": "^4.0.2"
    },
-   "scripts": {
-      "test": "jest --verbose --watch",
-      "testNoWatch": "jest --verbose",
-      "server": "nodemon -r dotenv/config index.js" 
-   },
-   "repository": {
-      "type": "git",
-      "url": "git+https://github.com/Gigapet-Build-Week/Backend.git"
-   },
-   "author": "Bradley Pitts",
-   "license": "MIT",
-   "bugs": {
-      "url": "https://github.com/Gigapet-Build-Week/Backend/issues"
-   },
-   "homepage": "https://github.com/Gigapet-Build-Week/Backend#readme",
    "jest": {
       "testEnvironment": "node",
       "setupFiles": ["dotenv/config"]
