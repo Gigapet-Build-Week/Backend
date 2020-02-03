@@ -8,7 +8,7 @@ const server = express();
 server.use(express.json());
 
 //main 
-server.get("/", () => {
+server.get("/", (req, res, next) => {
    res.json({
       api: "running",
       db_env: process.env.DB_ENV
