@@ -19,7 +19,7 @@ async function addUser (userData) {
          return this.findById(id);
       }
       
-      return this.add(newUser)[0];
+      return this.add(newUser);
    } catch (error) {
       return Promise.reject(error);
    }

@@ -26,7 +26,8 @@ router.post("/register", async (req, res, next) => {
       }
 
       //register user
-      const {password, ...sanitizedUser} = await authModel.addUser(req.body);
+      const [newUser] = await authModel.addUser(req.body);
+      const {password, ...sanitizedUser} = newUser;
       sanitizedUser.is_onboarded = !!sanitizedUser.is_onboarded;
 
       //return sanitized user data
