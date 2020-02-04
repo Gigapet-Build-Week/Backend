@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 const {status, msg} = require("../constants");
 
 module.exports = (req, res, next) => {
-   console.log(`req.headers: ${JSON.stringify(req.headers, null, 3)}`);
    const {authorization} = req.headers;
    const NO_PASS = () => {
       return res.status(status.UNAUTHENTICATED).json({ 

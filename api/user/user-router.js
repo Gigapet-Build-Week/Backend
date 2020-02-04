@@ -9,17 +9,26 @@ router.get("/account", async (req, res, next) => {
    //token payload { id: user.id, knickname: user.knickname }
    try {
       const {id} = req.tokenPayload;
-      const user = await Users.findById(id);
+      const [user] = await Users.findById(id);
 
       if (!user) {
          next(new Error("This user no longer exists!! This shouldn't happen."));
       }
    
-      const [username, knickname, is_onboarded, updated_at] = user;
+      const {username, knickname, is_onboarded, updated_at} = user;
       const children = await Children.findBy({parent_id: user.id});
-      const data = {username, knickname, is_onboarded, updated_at, children};
+      const data = {
+         username, 
+         knickname, 
+         is_onboarded: !!is_onboarded, 
+         updated_at, 
+         children
+      };
 
       res.json(data);
+      // res.status(status.BAD_REQ).json({
+      //    message: `${req.method}  ${req.url} still under construction!`
+      // });
    } catch (error) {
       next(error);
    }

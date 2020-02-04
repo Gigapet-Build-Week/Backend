@@ -3,6 +3,8 @@ const server = require("../api/server");
 const db = require("../data/knexDb");
 const {status, msg, APP_JSON} = require("../api/constants");
 
+const URL = "/api/users/account";
+
 const TEST_USER = {
    username: "OzzyOsbourn",
    password: "Im@R0ck$tar!"
@@ -10,21 +12,21 @@ const TEST_USER = {
 const get_users = (token) => {
    if (!token) {
       return superTest(server)
-         .get(`/api/users/account`);
+         .get(URL);
    }
 
    return superTest(server)
-      .get("/api/users/account")
+      .get(URL)
       .set("authorization", token);
 };
 const put_users = (id, data) => {
    return superTest(server)
-      .put(`/api/users/account`)
+      .put(URL)
       .send(data);
 };
 const remove_users = (id) => {
    return superTest(server)
-      .get(`/api/users/account`);
+      .get(URL);
 };
 
 //*** Begin Tests ***//
@@ -46,38 +48,36 @@ describe("Test Users Endpoints", () => {
          expect(response.type).toBe(APP_JSON);
          expect(response.body.message).toBe(msg.PLS_LOGIN);
       });
-      test.only("Returns status code 200 when auth token is valid", async () => {
+      test("Returns status code 200 when auth token is valid", async () => {
          const login_res = await superTest(server)
             .post("/api/auth/login")
             .send(TEST_USER);
          expect(login_res.status).toBe(status.OK);
-         console.log(`Logged In: ${JSON.stringify(login_res.body, null, 3)}`);
          const {token} = login_res.body;
 
-         console.log(`token: ${token}`);
          const response = await get_users(token);
          expect(response.status).toBe(status.OK);
          expect(response.type).toBe(APP_JSON);
-         expect(response.body.data).toMatchObject({
+         expect(response.body).toMatchObject({
             username: TEST_USER.username,
             is_onboarded: expect.any(Boolean),
             updated_at: expect.any(String),
             children: expect.any(Array)
          });
 
-         if (response.body.data.knickname) {
-            expect(response.body.data.knickname).toBe(expect.any(String));
+         if (response.body.knickname) {
+            expect(typeof response.body.knickname === "string").toBe(true);
          }
       });
    });
-   describe("PUT /api/users/account", () => {
-      test("placeholder", () => {
-         expect(true).toBe(false);
-      });
-   });
-   describe("DELETE /api/users/account", () => {
-      test("placeholder", () => {
-         expect(true).toBe(false);
-      });
-   });
+   // describe("PUT /api/users/account", () => {
+   //    test("placeholder", () => {
+   //       expect(true).toBe(false);
+   //    });
+   // });
+   // describe("DELETE /api/users/account", () => {
+   //    test("placeholder", () => {
+   //       expect(true).toBe(false);
+   //    });
+   // });
 });
