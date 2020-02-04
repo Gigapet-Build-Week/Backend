@@ -19,7 +19,7 @@ server.get("/", (req, res, next) => {
 
 //routes
 server.use("/api/auth", authRouter);
-// server.use("/api/user", authenticate, userRouter);
+server.use("/api/users", authenticate, userRouter);
 
 //404 Page not found
 server.use((req, res) => {

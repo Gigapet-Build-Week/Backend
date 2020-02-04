@@ -1,3 +1,4 @@
+const APP_JSON = "application/json";
 const msg = {
    GIVE_NAME_PWD: "Please provide a username and password.",
    BAD_NAME_PWD: "Bad username or passowrd",
@@ -16,6 +17,7 @@ const status = {
 };
 
 module.exports = {
+   APP_JSON,
    msg,
-   status
+   status,
 };
