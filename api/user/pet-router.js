@@ -133,6 +133,4 @@ router.put("/", validateId, validateInput, childMustExist, mustBeAllowed, async 
       next(error);
    }
 });
-
-//// DELETE /api/users/children/:id/pet
 module.exports = router;
