@@ -16,13 +16,16 @@ const tables = {
    Food_entries: new Model (tableNames.FOOD_ENTRIES),
 };
 const msg = {
+   FORBIDDEN: "You are not allowed to access this information.",
    PLS_LOGIN: "You must be logged in.",
    GIVE_NAME_PWD: "Please provide a username and password.",
    BAD_NAME_PWD: "Bad username or passowrd",
    ALREADY_EXISTS: "That user already exists!",
    CHILD_EXISTS: "That child already exists!",
+   NO_CHILD_EXISTS: "That child doesn't exist!",
    BAD_CHILD_DATA: "Malformed child input",
    PET_EXISTS: "That pet already exists!",
+   NO_PET_EXISTS: "Your child doesn't have a pet!",
    BAD_PET_DATA: "Malformed pet input",
 };
 
