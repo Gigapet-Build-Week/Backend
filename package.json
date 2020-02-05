@@ -5,6 +5,7 @@
    "main": "index.js",
    "scripts": {
       "test": "cross-env DB_ENV=testing jest --verbose --watch",
+      "testSingle": "cross-env DB_ENV=testing jest --verbose --forceExit __tests__/user.test.js",
       "testNoWatch": "cross-env DB_ENV=testing jest --verbose",
       "server": "nodemon -r dotenv/config index.js",
       "start": "node index.js"

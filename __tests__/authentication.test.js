@@ -2,13 +2,13 @@ const superTest = require("supertest");
 const jwt = require("jsonwebtoken");
 const server = require("../api/server");
 const db = require("../data/knexDb");
-const {status, msg} = require("../api/constants");
+const {status, msg, APP_JSON} = require("../api/constants");
 
 const TEST_USER = {
    username: "Your Mom",
    password: "Im@R0ck$tar!"
 };
-const APP_JSON = "application/json";
+const ;
 
 const runTest = (userData, toRoute) => {
    return superTest(server)
@@ -26,7 +26,7 @@ const loginUser = (userData) => {
 //*** Begin Tests ***//
 beforeAll(async () => {
    await db.seed.run();
-})
+});
 
 describe("POST /api/auth/register", () => {
    test("Returns status code 400 when missing username", async () => {
