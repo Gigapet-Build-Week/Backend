@@ -2,6 +2,9 @@
 *.db3
 *.db3-journal
 
+# vsCode files
+.vscode/
+
 # Logs
 logs
 *.log

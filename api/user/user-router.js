@@ -1,10 +1,12 @@
 const router = require("express").Router();
+const childRouter = require("./child-router");
 const Model = require("../Model");
 const Users = new Model("users");
 const Children = new Model("children");
 const {status} = require("../constants");
 
 router.get("/account", async (req, res, next) => {
+   console.log(Users);
    //token payload is expected in req.tokePayload
    //token payload { id: user.id, knickname: user.knickname }
    try {
@@ -43,5 +45,8 @@ router.delete("/:id", (req, res, next) => {
       message: `${req.method}  ${req.url} still under construction!`
    });
 });
+
+//subrouter
+router.use("/children", childRouter);
 
 module.exports = router;
