@@ -2,8 +2,9 @@ const APP_JSON = "application/json";
 const msg = {
    GIVE_NAME_PWD: "Please provide a username and password.",
    BAD_NAME_PWD: "Bad username or passowrd",
-   ALREADY_EXISTS: "That username already exists!",
-   PLS_LOGIN: "You must be logged in."
+   ALREADY_EXISTS: "That user already exists!",
+   PLS_LOGIN: "You must be logged in.",
+   BAD_CHILD_DATA: "Malformed child info"
 };
 
 const status = {

@@ -10,7 +10,7 @@ class Model {
          .insert(newItem)
          .returning("*");
    }
-   find() {
+   find () {
       return this.db();
    }
    findBy (filter) {

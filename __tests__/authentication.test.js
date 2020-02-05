@@ -8,7 +8,6 @@ const TEST_USER = {
    username: "Your Mom",
    password: "Im@R0ck$tar!"
 };
-const ;
 
 const runTest = (userData, toRoute) => {
    return superTest(server)
