@@ -1,7 +1,7 @@
 const router = require("express").Router();
-const Model = require("../Model");
+const petRouter = require("./pet-router");
 const insertRecord = require("../utils/insertRecord");
-const {status, msg} = require("../constants");
+const {status, msg, tables: {Children}} = require("../constants");
 
 //`POST /api/users/children`
 router.post("/", async (req, res, next) => {
@@ -35,21 +35,21 @@ router.post("/", async (req, res, next) => {
    }
 
    try {
+      //Must not already exist
+      const dupeChild = await Children.findBy({parent_id: id, name, age}).first();
+      if (dupeChild) {
+         return res.status(status.BAD_REQ).json({
+            message: msg.CHILD_EXISTS
+         });
+      }
+
       //add the new child
       const newChild = {parent_id: id, name, age};
-      const [child] = await insertRecord(new Model("children"), newChild);
+      const [child] = await insertRecord(Children, newChild);
 
       if (!child) {
          throw new Error("Something terrible happend while adding a child!");
       }
-
-      // //create a pet avatar
-      // const newPet = {
-      //    child_id: child.id,
-      //    health: (process.env.DB_ENV !== "production")? 0 : undefined,
-      //    health_target: (process.env.DB_ENV !== "production")? 0 : undefined,
-      // };
-      // const [pet] = await insertRecord(Pets, newPet);
 
       res.status(status.CREATED).json(child);
    } catch (error) {
@@ -57,5 +57,7 @@ router.post("/", async (req, res, next) => {
    }
 });
 
+//POST /api/users/children/:id/pet
+router.use("/:id/pet", petRouter);
 
 module.exports = router;
