@@ -1,12 +1,19 @@
 const Model = require("./Model");
 
 const APP_JSON = "application/json";
+const tableNames = {
+   USERS: "users",
+   CHILDREN: "children",
+   PETS: "pets",
+   CATEGORIES: "categories",
+   FOOD_ENTRIES: "food_entries",
+};
 const tables = {
-   Users: new Model("users"),
-   Children: new Model ("children"),
-   Pets: new Model ("pets"),
-   Categories: new Model ("categories"),
-   Food_entries: new Model ("food_entries"),
+   Users: new Model(tableNames.USERS),
+   Children: new Model (tableNames.CHILDREN),
+   Pets: new Model (tableNames.PETS),
+   Categories: new Model (tableNames.CATEGORIES),
+   Food_entries: new Model (tableNames.FOOD_ENTRIES),
 };
 const msg = {
    PLS_LOGIN: "You must be logged in.",
@@ -31,6 +38,7 @@ const status = {
 
 module.exports = {
    APP_JSON,
+   tableNames,
    tables,
    msg,
    status,
