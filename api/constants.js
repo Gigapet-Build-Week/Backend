@@ -32,6 +32,8 @@ const msg = {
 const status = {
    OK: 200,
    CREATED: 201,
+   ACCEPTED: 202,
+   NO_CONTENT: 204,
    BAD_REQ: 400,
    UNAUTHENTICATED: 401,
    FORBIDDEN: 403,
