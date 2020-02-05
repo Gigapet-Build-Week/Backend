@@ -1,10 +1,22 @@
+const Model = require("./Model");
+
 const APP_JSON = "application/json";
+const tables = {
+   Users: new Model("users"),
+   Children: new Model ("children"),
+   Pets: new Model ("pets"),
+   Categories: new Model ("categories"),
+   Food_entries: new Model ("food_entries"),
+};
 const msg = {
+   PLS_LOGIN: "You must be logged in.",
    GIVE_NAME_PWD: "Please provide a username and password.",
    BAD_NAME_PWD: "Bad username or passowrd",
    ALREADY_EXISTS: "That user already exists!",
-   PLS_LOGIN: "You must be logged in.",
-   BAD_CHILD_DATA: "Malformed child info"
+   CHILD_EXISTS: "That child already exists!",
+   BAD_CHILD_DATA: "Malformed child input",
+   PET_EXISTS: "That pet already exists!",
+   BAD_PET_DATA: "Malformed pet input",
 };
 
 const status = {
@@ -19,6 +31,7 @@ const status = {
 
 module.exports = {
    APP_JSON,
+   tables,
    msg,
    status,
 };

@@ -1,9 +1,6 @@
 const router = require("express").Router();
 const childRouter = require("./child-router");
-const Model = require("../Model");
-const Users = new Model("users");
-const Children = new Model("children");
-const {status} = require("../constants");
+const {status, tables: {Users, Children}} = require("../constants");
 
 router.get("/account", async (req, res, next) => {
    console.log(Users);
