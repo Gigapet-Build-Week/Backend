@@ -30,12 +30,23 @@ const validateId = (idType) => {
       next();
    };
 };
-const validateInput = (req, res, next) => {
-   //Category must exist
+const CategoryMustExist = async (req, res, next) => {
+   const name = req.newFoodEntry.category;
    
-   //eaton_on must be a Date in ISO format
-   console.log(new Date(req.body.eaten_on));
-   next();
+   try {
+      console.log(`Category Name: ${name}`)
+      const [category] = await Categories.findBy({name});
+      if (!category) {
+         return res.status(status.NOT_FOUND).json({
+            message: msg.NO_CAT_EXISTS
+         });
+      }
+   
+      req.category = category;
+      next();
+   } catch (error) {
+      next(error);
+   }
 };
 const ChildMustExist = async (req, res, next) => {
    try {
@@ -54,23 +65,35 @@ const ChildMustExist = async (req, res, next) => {
       next(error);
    }
 };
-const CategoryMustExist = async (req, res, next) => {
-   const name = req.newFoodEntry.category;
-   
-   try {
-      console.log(`Category Name: ${name}`)
-      const [category] = await Categories.findBy({name});
-      if (!category) {
-         return res.status(status.NOT_FOUND).json({
-            message: msg.NO_CAT_EXISTS
-         });
-      }
-   
-      req.category = category;
-      next();
-   } catch (error) {
-      next(error);
+const validateInput = (req, res, next) => {
+   const {eaten_on, description, servings} = req.body;
+
+   //eaton_on must be a Date
+   const date = new Date(eaten_on);
+   console.log(date);
+   if (Number.isNaN(date.valueOf())) {
+      return res.status(status.BAD_REQ).json({
+         message: msg.BAD_FOOD_DATA
+      });
    }
+
+   //transform description to prevent XXS attacks
+   // ??
+   console.log(`description: ${description}`);
+   if (!description) {
+      return res.status(status.BAD_REQ).json({
+         message: msg.BAD_FOOD_DATA
+      });
+   }
+
+   //servings must be a number
+   if (servings && typeof servings !== "number") {
+      return res.status(status.BAD_REQ).json({
+         message: msg.BAD_FOOD_DATA
+      });
+   }
+
+   next();
 };
 const FoodMustExist = async (req, res, next) => {
    try {
@@ -103,18 +126,18 @@ const mustBeAllowed = (req, res, next) => {
 
 //routes
 // /api/users/children/:id/food-log
-router.post("/food-log", validateId("children"), validateInput, (req, res, next) => {
+router.post("/", validateId("children"), ChildMustExist, validateInput, mustBeAllowed, (req, res, next) => {
    res.status(status.BAD_REQ).json({
       message: "endpoint still under construction!!"
    });
 });
-router.get("/", validateInput, (req, res, next) => {
-   res.status(status.BAD_REQ).json({
-      message: "endpoint still under construction!!"
-   });
-});
-router.get();
-router.put();
-router.delete();
+// router.get("/", validateInput, (req, res, next) => {
+//    res.status(status.BAD_REQ).json({
+//       message: "endpoint still under construction!!"
+//    });
+// });
+// router.get();
+// router.put();
+// router.delete();
 
 module.exports = router;

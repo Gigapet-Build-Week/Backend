@@ -62,6 +62,6 @@ router.post("/", async (req, res, next) => {
 router.use("/:id/pet", petRouter);
 
 ///api/users/children/:id/food-log
-router.use("/:id/pet", foodRouter);
+router.use("/:id/food-log", foodRouter);
 
 module.exports = router;
