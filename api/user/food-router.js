@@ -1,11 +1,3 @@
-/*
-## Food Entry
-- [ ] `POST /api/users/children/:id/food-log`
-- [ ] `GET /api/users/children/:id/food-log`
-- [ ] `GET /api/users/children/:id/food-log/:food_id`
-- [ ] `PUT /api/users/children/:id/food-log/:food_id`
-- [ ] `DELETE /api/users/children/:id/food-log/:food_id`
-*/
 const router = require("express").Router({mergeParams: true});
 const insertRecord = require("../utils/insertRecord");
 const {
@@ -31,7 +23,10 @@ const validateId = (idType) => {
          });
       }
 
-      req.newFoodEntry = (idType === CHILDREN)? {child_id: id} : {id};
+      if (idType === CHILDREN) {
+         console.log(`setting child_id to ${id}`);
+         req.newFoodEntry = {child_id: id};
+      }
       next();
    };
 };
@@ -52,6 +47,49 @@ const ChildMustExist = async (req, res, next) => {
       next(error);
    }
 };
+const validateInput = (req, res, next) => {
+   const {category, eaten_on, description, servings} = req.body;
+
+   //must have a category
+   if (!category) {
+      return res.status(status.BAD_REQ).json({
+         message: msg.BAD_FOOD_DATA
+      });
+   }
+
+   //eaton_on must be a Date
+   const date = new Date(eaten_on);
+   console.log(date);
+   if (Number.isNaN(date.valueOf())) {
+      return res.status(status.BAD_REQ).json({
+         message: msg.BAD_FOOD_DATA
+      });
+   }
+
+   //transform description to prevent XXS attacks
+   // ??
+   console.log(`description: ${description}`);
+   if (!description) {
+      return res.status(status.BAD_REQ).json({
+         message: msg.BAD_FOOD_DATA
+      });
+   }
+
+   //servings must be a number
+   if (servings && typeof servings !== "number") {
+      return res.status(status.BAD_REQ).json({
+         message: msg.BAD_FOOD_DATA
+      });
+   }
+
+   req.newFoodEntry = {
+      ...req.newFoodEntry,
+      eaten_on,
+      description,
+      servings
+   };
+   next();
+};
 const CategoryMustExist = async (req, res, next) => {
    const name = req.body.category;
    
@@ -70,46 +108,8 @@ const CategoryMustExist = async (req, res, next) => {
       next(error);
    }
 };
-
-const validateInput = (req, res, next) => {
-   const newFoodEntry = req.body;
-   const {eaten_on, description, servings} = req.body;
-
-   //eaton_on must be a Date
-   const date = new Date(eaten_on);
-   console.log(date);
-   if (Number.isNaN(date.valueOf())) {
-      return res.status(status.BAD_REQ).json({
-         message: msg.BAD_FOOD_DATA
-      });
-   }
-
-
-   //transform description to prevent XXS attacks
-   // ??
-   console.log(`description: ${description}`);
-   if (!description) {
-      return res.status(status.BAD_REQ).json({
-         message: msg.BAD_FOOD_DATA
-      });
-   }
-
-   //servings must be a number
-   if (servings && typeof servings !== "number") {
-      return res.status(status.BAD_REQ).json({
-         message: msg.BAD_FOOD_DATA
-      });
-   }
-
-   const {category, ...foodEntry} = newFoodEntry;
-   req.newFoodEntry = {
-      ...req.newFoodEntry,
-      ...foodEntry
-   };
-   next();
-};
 const FoodMustExist = async (req, res, next) => {
-   const {id} = req.newFoodEntry;
+   const id = req.params.food_id;
    try {
       //record must exist
       console.log(`Food ID: ${id}`)
@@ -140,7 +140,7 @@ const mustBeAllowed = (req, res, next) => {
 
 //routes
 // /api/users/children/:id/food-log
-router.post("/", validateId(CHILDREN), ChildMustExist, CategoryMustExist, validateInput, mustBeAllowed, async (req, res, next) => {
+router.post("/", validateId(CHILDREN), ChildMustExist, validateInput, CategoryMustExist, mustBeAllowed, async (req, res, next) => {
    try {
       //create a food entry
       console.log(req.newFoodEntry);
@@ -172,20 +172,48 @@ router.get("/", validateId(CHILDREN), ChildMustExist, mustBeAllowed, async (req,
       next(error);
    }
 });
-router.get("/", validateInput, (req, res, next) => {
-   res.status(status.BAD_REQ).json({
-      message: "endpoint still under construction!!"
-   });
+router.get("/:food_id", validateId(CHILDREN), ChildMustExist, validateId(FOOD_ENTRIES), mustBeAllowed, async (req, res, next) => {
+   const {id} = req.newFoodEntry;
+   try {
+      const [entry] = await Food_entries.findById(id);
+      if (!entry) {
+         return res.status(status.NOT_FOUND).json({
+            message: msg.NO_FOOD_LOG
+         });
+      }
+
+      res.json(entry);
+   } catch (error) {
+      next(error);
+   }
 });
-router.put("/", validateInput, (req, res, next) => {
-   res.status(status.BAD_REQ).json({
-      message: "endpoint still under construction!!"
-   });
+router.put("/:food_id", validateId(CHILDREN), ChildMustExist, validateId(FOOD_ENTRIES), CategoryMustExist, FoodMustExist, validateInput, mustBeAllowed, async (req, res, next) => {
+   try {
+      await Food_entries.update(req.food_entry.id, req.newFoodEntry);
+      const update = await Food_entries.findById(req.food_entry.id);
+      res.status(status.ACCEPTED).json(update);
+   } catch (error) {
+      next(error);
+   }
 });
-router.delete("/", validateInput, (req, res, next) => {
-   res.status(status.BAD_REQ).json({
-      message: "endpoint still under construction!!"
-   });
+router.delete("/:food_id", validateId(CHILDREN), ChildMustExist, validateId(FOOD_ENTRIES), FoodMustExist, mustBeAllowed, async (req, res, next) => {
+   const {id} = req.food_entry;
+
+   //Must belong to the child
+   if (req.child.id !== req.food_entry.child_id) {
+      return res.status(status.BAD_REQ).json({
+         message: msg.BAD_FOOD_DATA
+      });
+   }
+
+   try {
+      await Food_entries.remove(id);
+      res.status(status.ACCEPTED).json({
+         message: "Food Entry deleted!"
+      });
+   } catch (error) {
+      next(error);
+   }
 });
 
 module.exports = router;
