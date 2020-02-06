@@ -7,7 +7,7 @@
 - [ ] `DELETE /api/users/children/:id/food-log/:food_id`
 */
 const router = require("express").Router({mergeParams: true});
-const {tables: {Children, Food_entries}, msg} = require("../constants");
+const {tables: {Children, Food_entries, Categories}, msg, status} = require("../constants");
 
 //local middleware
 const validateId = (idType) => {
@@ -31,24 +31,10 @@ const validateId = (idType) => {
    };
 };
 const validateInput = (req, res, next) => {
-   // //health and heath_target are required
-   // const {health, health_target} = req.body;
-   // if (typeof health === "undefined" || health === null) {
-   //    return res.status(status.BAD_REQ).json({
-   //       message: msg.BAD_PET_DATA
-   //    });
-   // }
-   // //health and heath_target must be integers greater-than or equal to 0
-   // if (!Number.isInteger(Number(health)) || !Number.isInteger(Number(health_target)) ||
-   //    (health < 0 || health_target < 0))
-   // {
-   //    return res.status(status.BAD_REQ).json({
-   //       message: msg.BAD_PET_DATA
-   //    });
-   // }
-
-   // req.newPet.health = health;
-   // req.newPet.health_target = health_target;
+   //Category must exist
+   
+   //eaton_on must be a Date in ISO format
+   console.log(new Date(req.body.eaten_on));
    next();
 };
 const ChildMustExist = async (req, res, next) => {
@@ -63,6 +49,24 @@ const ChildMustExist = async (req, res, next) => {
       }
    
       req.child = child;
+      next();
+   } catch (error) {
+      next(error);
+   }
+};
+const CategoryMustExist = async (req, res, next) => {
+   const name = req.newFoodEntry.category;
+   
+   try {
+      console.log(`Category Name: ${name}`)
+      const [category] = await Categories.findBy({name});
+      if (!category) {
+         return res.status(status.NOT_FOUND).json({
+            message: msg.NO_CAT_EXISTS
+         });
+      }
+   
+      req.category = category;
       next();
    } catch (error) {
       next(error);
@@ -98,8 +102,17 @@ const mustBeAllowed = (req, res, next) => {
 };
 
 //routes
-router.post();
-router.get();
+// /api/users/children/:id/food-log
+router.post("/food-log", validateId("children"), validateInput, (req, res, next) => {
+   res.status(status.BAD_REQ).json({
+      message: "endpoint still under construction!!"
+   });
+});
+router.get("/", validateInput, (req, res, next) => {
+   res.status(status.BAD_REQ).json({
+      message: "endpoint still under construction!!"
+   });
+});
 router.get();
 router.put();
 router.delete();
