@@ -1,3 +1,9 @@
+// ## Food Entry
+// - [x] `POST /api/users/children/:id/food-log`
+// - [x] `GET /api/users/children/:id/food-log`
+// - [x] `GET /api/users/children/:id/food-log/:food_id`
+// - [x] `PUT /api/users/children/:id/food-log/:food_id`
+// - [x] `DELETE /api/users/children/:id/food-log/:food_id`
 const router = require("express").Router({mergeParams: true});
 const insertRecord = require("../utils/insertRecord");
 const {
