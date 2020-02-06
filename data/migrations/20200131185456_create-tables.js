@@ -93,6 +93,7 @@ exports.up = async function (knex) {
          .onDelete("CASCADE");
       //category_id integer [ref: > category.id]
       table.integer("category_id")
+         .notNullable()
          .references("id").inTable(CATEGORIES)
          .onUpdate("CASCADE")
          .onDelete("CASCADE");
@@ -103,9 +104,9 @@ exports.up = async function (knex) {
       table.string("description")
          .notNullable();
       //servings unsigned [default: 1]
-      table.float("servings", 3)
+      table.decimal("servings", 3)
          .unsigned()
-         .defaultTo(1);
+         .defaultTo(1.000);
    });
 };
 
