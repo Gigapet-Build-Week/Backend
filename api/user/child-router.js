@@ -125,8 +125,36 @@ router.get("/:id", validateChildId, ChildMustExist, mustBeAllowed, async (req, r
    }
 });
 
-// - [ ] `PUT /api/users/children/:child_id`
+//PUT /api/users/children/:child_id`
+router.put("/:id", validateChildId, ChildMustExist, mustBeAllowed, async (req, res, next) => {
+   //data is valid
+   const {parent_id, name, age} = req.body;
+   const newData = {parent_id, name, age};
+
+   try {
+      await Children.update(req.child.id, newData);
+      const [upd_child] = await Children.findById(req.child.id);
+      const [pet] = await Pets.findBy({child_id: req.child.id});
+
+      upd_child.pet = pet;
+      res.status(status.ACCEPTED).json(upd_child);
+   } catch (error) {
+      next(error);
+   }
+});
+
 // - [ ] `DELETE /api/users/children/:child_id`
+router.delete("/:id", validateChildId, ChildMustExist, mustBeAllowed, async (req, res, next) => {
+   //data is valid
+   try {
+      await Children.remove(req.child.id);
+      res.status(status.ACCEPTED).json({
+         message: "Child deleted!"
+      });
+   } catch (error) {
+      next(error);
+   }
+});
 
 ///api/users/children/:id/pet
 router.use("/:id/pet", validateChildId, ChildMustExist, mustBeAllowed, petRouter);
