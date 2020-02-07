@@ -2,9 +2,10 @@ const router = require("express").Router();
 const petRouter = require("./pet-router");
 const foodRouter = require("./food-router");
 const insertRecord = require("../utils/insertRecord");
-const {status, msg, tables: {Children}} = require("../constants");
+const {status, msg, tables: {Children, Pets}} = require("../constants");
 
 const validateChildId = (req, res, next) => {
+   console.log(`Params: ${JSON.stringify(req.params, null, 3)}`);
    const id = Number(req.params.id);
 
    //Child ID must be an integer greater than 0
@@ -19,9 +20,11 @@ const validateChildId = (req, res, next) => {
       });
    }
 
+   req.child_id = id;
    next();
 };
 const ChildMustExist = async (req, res, next) => {
+   console.log(`Params: ${JSON.stringify(req.params, null, 3)}`);
    const id = Number(req.params.id);
 
    try {
@@ -40,9 +43,10 @@ const ChildMustExist = async (req, res, next) => {
    }
 };
 const mustBeAllowed = (req, res, next) => {
+   console.log(`Child: ${JSON.stringify(req.child, null, 3)}`);
    //parent must 'own' the child
-   console.log(`${req.tokenPayload.id} !== ${req.child.id}`);
-   if (req.tokenPayload.id !== req.child.id) {
+   console.log(`${req.tokenPayload.id} !== ${req.child.parent_id}`);
+   if (req.tokenPayload.id !== req.child.parent_id) {
       return res.status(status.FORBIDDEN).json({
          message: msg.FORBIDDEN
       });
@@ -106,17 +110,28 @@ router.post("/", async (req, res, next) => {
 });
 
 //`GET /api/users/children/:child_id`
-router.get("/:id", validateChildId, mustBeAllowed, ChildMustExist, async (req, res, next) => {
-
+router.get("/:id", validateChildId, ChildMustExist, mustBeAllowed, async (req, res, next) => {
+   //If we get here, the child data is in req.child
+   //get pet info
+   console.log
+   try {
+      const [pet] = await Pets.findBy({child_id: req.child.id});
+      res.json({
+         ...req.child,
+         pet
+      });
+   } catch (error) {
+      next(error);
+   }
 });
 
-- [ ] `PUT /api/users/children/:child_id`
-- [ ] `DELETE /api/users/children/:child_id`
+// - [ ] `PUT /api/users/children/:child_id`
+// - [ ] `DELETE /api/users/children/:child_id`
 
 ///api/users/children/:id/pet
-router.use("/:id/pet", validateChildId, mustBeAllowed, ChildMustExist, petRouter);
+router.use("/:id/pet", validateChildId, ChildMustExist, mustBeAllowed, petRouter);
 
 ///api/users/children/:id/food-log
-router.use("/:id/food-log", validateChildId, mustBeAllowed, ChildMustExist, foodRouter);
+router.use("/:id/food-log", validateChildId, ChildMustExist, mustBeAllowed, foodRouter);
 
 module.exports = router;
