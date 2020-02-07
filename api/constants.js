@@ -27,6 +27,10 @@ const msg = {
    PET_EXISTS: "That pet already exists!",
    NO_PET_EXISTS: "Your child doesn't have a pet!",
    BAD_PET_DATA: "Malformed pet input",
+   FOOD_EXISTS: "An entry for that already exists, please update the existing one.",
+   NO_FOOD_LOG: "I'm sorry, I couldn't find any food",
+   NO_CAT_EXISTS: "I'm sorry, I couldn't find that category",
+   BAD_FOOD_DATA: "Malformed food entry!"
 };
 
 const status = {

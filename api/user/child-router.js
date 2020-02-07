@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const petRouter = require("./pet-router");
+const foodRouter = require("./food-router");
 const insertRecord = require("../utils/insertRecord");
 const {status, msg, tables: {Children}} = require("../constants");
 
@@ -57,7 +58,10 @@ router.post("/", async (req, res, next) => {
    }
 });
 
-//POST /api/users/children/:id/pet
+///api/users/children/:id/pet
 router.use("/:id/pet", petRouter);
+
+///api/users/children/:id/food-log
+router.use("/:id/food-log", foodRouter);
 
 module.exports = router;

@@ -28,6 +28,7 @@ class Model {
    remove (id) {
       return this.db()
          .del()
+         .where({id});
    }
 }
 
