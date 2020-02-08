@@ -28,6 +28,7 @@ const validateFoodId = (req, res, next) => {
       });
    }
 
+   req.food_id = id;
    next();
 };
 const validateInput = (req, res, next) => {
@@ -66,6 +67,7 @@ const validateInput = (req, res, next) => {
    }
 
    req.newFoodEntry = {
+      child_id: req.child.id,
       ...req.newFoodEntry,
       eaten_on,
       description,
@@ -91,31 +93,32 @@ const CategoryMustExist = async (req, res, next) => {
       next(error);
    }
 };
+
 const FoodMustExist = async (req, res, next) => {
-   const id = req.params.food_id;
    try {
       //record must exist
-      console.log(`Food ID: ${id}`)
-      const [food] = await Food_entries.findById(id);
+      const [food] = await Food_entries.findById(req.params.food_id);
       if (!food) {
          return res.status(status.NOT_FOUND).json({
             message: msg.NO_FOOD_LOG
          });
       }
    
-      req.food_entry = food;
+      const {id, ...oldFood} = food;
+      req.newFoodEntry = {
+         ...oldFood,
+         ...req.newFoodEntry,
+      };
       next();
    } catch (error) {
       next(error);
    }
 };
-
 //routes
 // /api/users/children/:id/food-log
 router.post("/", validateInput, CategoryMustExist, async (req, res, next) => {
    try {
       //create a food entry
-      console.log(req.newFoodEntry);
       const [food] = await insertRecord(Food_entries, req.newFoodEntry);
       if (!food) {
          throw new Error("Something terrible happend while adding a pet!");
@@ -145,12 +148,18 @@ router.get("/", async (req, res, next) => {
    }
 });
 router.get("/:food_id", validateFoodId, async (req, res, next) => {
-   const {id} = req.newFoodEntry;
    try {
-      const [entry] = await Food_entries.findById(id);
+      const [entry] = await Food_entries.findById(req.food_id);
       if (!entry) {
          return res.status(status.NOT_FOUND).json({
             message: msg.NO_FOOD_LOG
+         });
+      }
+
+      //Entry must belong to the child
+      if (req.child.id !== entry.child_id) {
+         return res.status(status.BAD_REQ).json({
+            message: msg.BAD_FOOD_DATA
          });
       }
 
@@ -159,27 +168,25 @@ router.get("/:food_id", validateFoodId, async (req, res, next) => {
       next(error);
    }
 });
-router.put("/:food_id", validateFoodId, CategoryMustExist, FoodMustExist, validateInput, async (req, res, next) => {
+router.put("/:food_id", validateFoodId, validateInput, CategoryMustExist, FoodMustExist, async (req, res, next) => {
    try {
-      await Food_entries.update(req.food_entry.id, req.newFoodEntry);
-      const update = await Food_entries.findById(req.food_entry.id);
+      await Food_entries.update(req.food_id, req.newFoodEntry);
+      const update = await Food_entries.findById(req.food_id);
       res.status(status.ACCEPTED).json(update);
    } catch (error) {
       next(error);
    }
 });
 router.delete("/:food_id", validateFoodId, FoodMustExist, async (req, res, next) => {
-   const {id} = req.food_entry;
-
    //Must belong to the child
-   if (req.child.id !== req.food_entry.child_id) {
+   if (req.child.id !== req.newFoodEntry.child_id) {
       return res.status(status.BAD_REQ).json({
          message: msg.BAD_FOOD_DATA
       });
    }
 
    try {
-      await Food_entries.remove(id);
+      await Food_entries.remove(req.food_id);
       res.status(status.ACCEPTED).json({
          message: "Food Entry deleted!"
       });
