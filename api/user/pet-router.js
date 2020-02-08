@@ -19,8 +19,8 @@ const validateInput = (req, res, next) => {
       });
    }
 
-   req.newPet.health = health;
-   req.newPet.health_target = health_target;
+   req.newPet = {health};
+   req.newPet = {health_target};
    next();
 };
 const noDuplicatePets = async (req, res, next) => {

@@ -158,7 +158,6 @@ router.delete("/:id", validateChildId, ChildMustExist, mustBeAllowed, async (req
 
 ///api/users/children/:id/pet
 router.use("/:id/pet", validateChildId, ChildMustExist, mustBeAllowed, petRouter);
-
 ///api/users/children/:id/food-log
 router.use("/:id/food-log", validateChildId, ChildMustExist, mustBeAllowed, foodRouter);
 
