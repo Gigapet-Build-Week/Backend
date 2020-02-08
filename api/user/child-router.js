@@ -20,7 +20,6 @@ const validateChildId = (req, res, next) => {
       });
    }
 
-   // req.child_id = id;
    next();
 };
 const ChildMustExist = async (req, res, next) => {
