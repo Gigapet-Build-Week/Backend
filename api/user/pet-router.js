@@ -60,7 +60,7 @@ router.post("/", validateInput, noDuplicatePets, async (req, res, next) => {
 //GET /api/users/children/:id/pet
 router.get("/", async (req, res, next) => {
    try {
-      const [pet] = await Pets.findBy({child_id: req.newPet.child_id});
+      const [pet] = await Pets.findBy({child_id: req.child.id});
       if (!pet) {
          return res.status(status.NOT_FOUND).json({
             message: msg.NO_PET_EXISTS
