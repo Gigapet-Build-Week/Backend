@@ -20,7 +20,7 @@ const validateChildId = (req, res, next) => {
       });
    }
 
-   req.child_id = id;
+   // req.child_id = id;
    next();
 };
 const ChildMustExist = async (req, res, next) => {
@@ -113,7 +113,6 @@ router.post("/", async (req, res, next) => {
 router.get("/:id", validateChildId, ChildMustExist, mustBeAllowed, async (req, res, next) => {
    //If we get here, the child data is in req.child
    //get pet info
-   console.log
    try {
       const [pet] = await Pets.findBy({child_id: req.child.id});
       res.json({
