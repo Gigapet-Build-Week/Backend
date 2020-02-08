@@ -4,8 +4,8 @@
    "description": "",
    "main": "index.js",
    "scripts": {
-      "test": "cross-env DB_ENV=testing jest --verbose --watch --runInBand",
-      "testSingle": "cross-env DB_ENV=testing jest --verbose --forceExit --runInBand __tests__/user.test.js",
+      "test": "cross-env DB_ENV=testing jest --watch --runInBand",
+      "testSingle": "cross-env DB_ENV=testing jest --verbose --forceExit --runInBand __tests__/food-entries.test.js",
       "server": "nodemon -r dotenv/config index.js",
       "start": "node index.js"
    },
@@ -39,6 +39,7 @@
    },
    "jest": {
       "testEnvironment": "node",
+      "testPathIgnorePatterns": ["/node_modules/", "/__tests__\/utils/"],
       "setupFiles": [
          "dotenv/config"
       ]
