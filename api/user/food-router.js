@@ -43,7 +43,6 @@ const validateInput = (req, res, next) => {
 
    //eaton_on must be a Date
    const date = new Date(eaten_on);
-   console.log(date);
    if (Number.isNaN(date.valueOf())) {
       return res.status(status.BAD_REQ).json({
          message: msg.BAD_FOOD_DATA
@@ -52,7 +51,6 @@ const validateInput = (req, res, next) => {
 
    //transform description to prevent XXS attacks
    // ??
-   console.log(`description: ${description}`);
    if (!description) {
       return res.status(status.BAD_REQ).json({
          message: msg.BAD_FOOD_DATA
@@ -79,7 +77,6 @@ const CategoryMustExist = async (req, res, next) => {
    const name = req.body.category;
    
    try {
-      console.log(`Category Name: ${name}`)
       const [category] = await Categories.findBy({name});
       if (!category) {
          return res.status(status.NOT_FOUND).json({

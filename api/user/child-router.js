@@ -5,7 +5,6 @@ const insertRecord = require("../utils/insertRecord");
 const {status, msg, tables: {Children, Pets}} = require("../constants");
 
 const validateChildId = (req, res, next) => {
-   console.log(`Params: ${JSON.stringify(req.params, null, 3)}`);
    const id = Number(req.params.id);
 
    //Child ID must be an integer greater than 0
@@ -23,7 +22,6 @@ const validateChildId = (req, res, next) => {
    next();
 };
 const ChildMustExist = async (req, res, next) => {
-   console.log(`Params: ${JSON.stringify(req.params, null, 3)}`);
    const id = Number(req.params.id);
 
    try {
@@ -42,7 +40,6 @@ const ChildMustExist = async (req, res, next) => {
    }
 };
 const mustBeAllowed = (req, res, next) => {
-   console.log(`Child: ${JSON.stringify(req.child, null, 3)}`);
    //parent must 'own' the child
    console.log(`${req.tokenPayload.id} !== ${req.child.parent_id}`);
    if (req.tokenPayload.id !== req.child.parent_id) {

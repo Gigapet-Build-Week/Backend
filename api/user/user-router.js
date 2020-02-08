@@ -3,7 +3,6 @@ const childRouter = require("./child-router");
 const {status, tables: {Users, Children}} = require("../constants");
 
 router.get("/account", async (req, res, next) => {
-   console.log(Users);
    //token payload is expected in req.tokePayload
    //token payload { id: user.id, knickname: user.knickname }
    try {
