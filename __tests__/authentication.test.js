@@ -48,7 +48,6 @@ describe("POST /api/auth/register", () => {
 
    test("Returns status code 201 when data is good", async () => {
       const response = await registerUser(TEST_USER);
-      console.log(`newUser: ${JSON.stringify(response.body, null, 3)}`);
       const newUser = response.body;
       expect(response.status).toBe(status.CREATED);
       expect(response.type).toBe(APP_JSON);

@@ -10,12 +10,12 @@ const validateChildId = (req, res, next) => {
    //Child ID must be an integer greater than 0
    if (!Number.isInteger(id)) {
       return res.status(status.BAD_REQ).json({
-         message: msg.BAD_PET_DATA
+         message: msg.BAD_CHILD_DATA
       });
    }
    if (!id || id < 1) {
       return res.status(status.BAD_REQ).json({
-         message: msg.BAD_PET_DATA
+         message: msg.BAD_CHILD_DATA
       });
    }
 
