@@ -5,9 +5,10 @@
 // - [ ] `DELETE /api/users/children/:id/food-log/:food_id`
 const request = require("supertest");
 const server = require("../api/server");
-const {status} = require("../api/constants");
+const db = require("../data/knexDb");
+const {status, msg, APP_JSON} = require("../api/constants");
 
-const URL = "/api/users/children/:id/food-log";
+const base_url = "/api/users/children/:id/food-log";
 const TEST_USER = {
    username: "OzzyOsbourn",
    password: "Im@R0ck$tar!"
@@ -39,17 +40,34 @@ const testInput = () => {
    });
 };
 
+//*** Begin Tests ***//
+beforeAll(async () => {
+   await db.seed.run();
+});
+
 describe("Test Food Entries Endpoints", () => {
-   describe(`POST ${URL}/:id/food-log`, () => {
-      testChildId("post", URL);
+   describe(`POST ${base_url}/:id/food-log`, () => {
+      testChildId("post", base_url);
       // testInput();
       test(`Should return ${status.CREATED} and the new food entry when good input is provided`, async () => {
+         const url = base_url.replace(/:id/i, "4");
          const token = await login_user(TEST_USER);
-         console.log(`After Login Token: ${token}`);
+         const response = await request(server)
+            .post(url, {
+               category: "Grain",
+               eaten_on: "2020-02-13",
+               description: "Carrots",
+               servings: 2
+            })
+            .set("authorization", token);
+
+         expect(response.status).toBe(status.CREATED);
+         expect(response.type).toBe(APP_JSON);
+         // expect(response.body.message).toBe(msg.BAD_CHILD_DATA);
          expect(true).toBe(false);
       });
    });
-   describe(`GET ${URL}/:id/food-log`, () => {
+   describe(`GET ${base_url}/:id/food-log`, () => {
       // testChildId();
 
       test(`Should return ${status.NOT_FOUND} when no food log is found for given child`, () => {
@@ -59,7 +77,7 @@ describe("Test Food Entries Endpoints", () => {
          expect(true).toBe(false);
       });
    });
-   describe(`GET ${URL}/:id/food-log/:food_id`, () => {
+   describe(`GET ${base_url}/:id/food-log/:food_id`, () => {
       // testChildId();
       // testFoodId();
 
@@ -67,7 +85,7 @@ describe("Test Food Entries Endpoints", () => {
          expect(true).toBe(false);
       });
    });
-   describe(`PUT ${URL}/:id/food-log/:food_id`, () => {
+   describe(`PUT ${base_url}/:id/food-log/:food_id`, () => {
       // testChildId();
       // testFoodId();
       // testInput();
@@ -76,7 +94,7 @@ describe("Test Food Entries Endpoints", () => {
          expect(true).toBe(false);
       });
    });
-   describe(`DELETE ${URL}/:id/food-log/:food_id`, () => {
+   describe(`DELETE ${base_url}/:id/food-log/:food_id`, () => {
       // testChildId();
       // testFoodId();
 
